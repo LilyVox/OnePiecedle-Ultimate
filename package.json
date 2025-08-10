@@ -11,9 +11,12 @@
     "scrape": "npx tsx ./src/backend/scraper.ts"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.1.11",
+    "fuse.js": "^7.1.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router": "^7.7.1"
+    "react-router": "^7.7.1",
+    "tailwindcss": "^4.1.11"
   },
   "devDependencies": {
     "@ariakit/react": "^0.4.17",

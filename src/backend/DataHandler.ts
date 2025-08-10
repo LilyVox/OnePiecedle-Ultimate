@@ -2,22 +2,8 @@ import { characterData } from './characterData';
 import { characterList } from './characterList';
 import { saveDataToFile } from './utils';
 import { grabSampleCharacterInfo, initCharacterData } from './scraper';
-import type { Character, CharacterListEntry, SearchCharacter } from './types';
+import type { CharacterListEntry } from './types';
 
-export function buildCharacterSearchList() {
-  console.time('Building Search Character Data');
-  const searchCharacters: SearchCharacter[] = characterData.map((char) => {
-    return {
-      index: char.index,
-      name: char.name,
-      moniker: char.moniker,
-      mainAffiliation: char.affiliations.split(',')[0],
-      imageUrl: char.imageUrl,
-    };
-  });
-  saveDataToFile('searchCharacterList', 'SearchCharacter', searchCharacters);
-  console.timeEnd('Building Search Character Data');
-}
 
 export function findUniqueAffiliations() {
   const uniqueAffiliations: string[] = [];
@@ -41,10 +27,25 @@ export function sampleCharacterInfo() {
     console.log(data);
   });
 }
-
-export function selectCharForGuessing(charList: CharacterListEntry[]) {
-  const charIndex = Math.floor(Math.random() * charList.length)
-  return charList[charIndex];
+export const findCharDataByIndex = (index: number) => {
+  const tempChar = characterData.find((char) => {
+    if (char.index === index) return char;
+  });
+  if (tempChar === undefined) return characterData[0];
+  return tempChar;
+};
+export const findCharDataByName = (search: string) => {
+  const tempChar = characterData.find((char) => {
+    if (char.name === search) return char;
+  });
+  if (tempChar === undefined) return characterData[0];
+  return tempChar;
+};
+export function selectCharForGuessing() {
+  const charIndex = Math.floor(Math.random() * characterData.length)
+  const possibleChar = characterData[charIndex];
+  if(possibleChar.difficulty < 3) return possibleChar;
+  return selectCharForGuessing()
   // selection algorithm
   // probably based on the day, include "conditional builder"
   // for example, whether we're doing anime or manga.
@@ -52,5 +53,5 @@ export function selectCharForGuessing(charList: CharacterListEntry[]) {
 
 // buildCharacterSearchList();
 // findUniqueAffiliations()
-// initCharacterData();
+initCharacterData();
 // sampleCharacterInfo();

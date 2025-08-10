@@ -8,7 +8,6 @@ Currently it's very manual. You'll need to:
 
 - cd into src/backend
 - open dataHandler and call `initCharacterData()`
-- also call `buildCharacterSearchList()`
 - 
 
 ## Features

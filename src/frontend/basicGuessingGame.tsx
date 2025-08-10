@@ -1,17 +1,11 @@
-import React, { useState } from 'react';
-import SelectionBox from './components/SearchBox';
-import { searchCharacterList } from '../backend/searchCharacterList';
+import React, { useEffect, useState } from 'react';
+import SearchBox from './components/TestSearchBox';
 import { characterData } from '../backend/characterData';
-import type {
-  SearchCharacter,
-  Character,
-  DevilFruitField,
-  GuessShape,
-  TableEntry,
-} from '../backend/types';
+import type { Character, DevilFruitField, GuessShape, TableEntry } from '../backend/types';
 import { GuessCharacter } from './GuessCharacter';
 import ErrorBoundary from './components/ErrorBoundary';
 import './guessingGame.css';
+import { selectCharForGuessing, findCharDataByName } from '../backend/DataHandler';
 
 const Header = () => (
   <header
@@ -42,7 +36,15 @@ const IconsRow = () => (
   </div>
 );
 
-const StatsRow = () => (
+const StatsRow = ({
+  difficulty,
+  totalGuesses,
+  averageGuesses,
+}: {
+  difficulty: number;
+  totalGuesses: number;
+  averageGuesses: number;
+}) => (
   <div
     style={{
       textAlign: 'center',
@@ -52,15 +54,15 @@ const StatsRow = () => (
       gap: '.25rem',
     }}>
     <p>
-      Difficulty: <strong>Placeholder</strong>
+      Difficulty: <strong>{difficulty}</strong>
     </p>
     <p>/</p>
     <p>
-      Number of Guesses: <strong>Placeholder</strong>
+      Total Guesses: <strong>{totalGuesses}</strong>
     </p>
     <p>/</p>
     <p>
-      Average Guesses: <strong>Placeholder</strong>
+      Average Guesses: <strong>{averageGuesses}</strong>
     </p>
   </div>
 );
@@ -70,7 +72,7 @@ const formatEntryForTable = (char: Character): TableEntry => {
   if (dFruit === 'Unknown') showFruit = dFruit.toString();
   else if (Array.isArray(dFruit)) showFruit = dFruit[0].type;
   else showFruit = dFruit.type;
-  const showAffiliations = char.affiliations.split(',').splice(0, 4).join(',');
+  const showAffiliations = char.affiliations;
   return {
     name: char.name,
     debut: char.debut,
@@ -122,10 +124,7 @@ const TableEntryWithComparison = ({
   return (
     <tr key={entry.index}>
       <td className='table_image'>
-        <img
-          src='https://dok1t7q1m768g.cloudfront.net/Atagoyama_Anime.jpg?Expires=1754686278&Signature=IUmDw8QP3MRZXmUKsomyvtTPU6VHZXUsVZkf3-stPiLMl~~qnNEd98KYL8wn-4W5iter~W765UkibxWu3q7kOLQ~1s0lxh1oBL9ALJlXAW19nfj-V3TI2lDcc08slFLQNjAogUBalGP6mtHfD7ec1zNvtUIuEgPlzVHlWIkZDAod9i7ZLi2jTQ3oiWUllNu6hLFIOM3IFAcGZECWyeNS6XlWBSOX-nR4jlocL-J0kQebet-tImrDsPmUIj-Mli7OtYDDF9pEuyNv5EgkDwNY70clRZSW6ig9XKDZ-e8iS0Bsbu5aM2CqskFK7eI-ZKWQ3wZVkZzhRPtYeVaOSUdFPQ__&Key-Pair-Id=K2RCJ8R40JMUEM'
-          alt='char icon'
-        />
+        <img src={entry.imageUrl} alt='char icon' />
       </td>
       {headerKeys.map((header, i) => (
         <td className={comparison[header as keyof GuessShape]} key={i}>
@@ -162,43 +161,66 @@ function Table({ matchCharacter, entries }: { matchCharacter: Character; entries
     </table>
   );
 }
-const findCharData = (index: number) => {
-  const tempChar = characterData.find((char) => {
-    if (char.index === index) return char;
-  });
-  if (tempChar === undefined) return characterData[0];
-  return tempChar;
-};
 const emptyTableDisplay = () => {
-  return (<div>Guess a character to get started...</div>)
-}
-const emptyCharArray: Character[] = [];
-const blackBeardMatch = findCharData(803);
-function BasicGuessingGame() {
-  const [entries, setEntries] = useState(emptyCharArray);
+  return <div>Guess a character to get started...</div>;
+};
+
+function BasicGuessingGame({ target }: { target: Character }) {
+  const [entries, setEntries] = useState<Character[]>([]);
   const updateEntries = (newEntry: Character) => setEntries([...entries, newEntry]);
-  const selection = (item: SearchCharacter) => {
-    console.log(`${item.name} picked!`);
-    const foundChar = characterData.find((char) => char.index === item.index);
-    if (foundChar) updateEntries(foundChar);
-    return characterData[0];
+  const selection = (item: Character) => {
+    updateEntries(item);
+    return item;
+  };
+  const handleSearch = (query: string) => {
+    console.log('Searching for:', query);
+    const foundChar = findCharDataByName(query);
+    if (!entries.includes(foundChar)) selection(foundChar);
   };
 
   return (
     <ErrorBoundary>
-      <div style={{ fontFamily: 'Arial, sans-serif', padding: '0px' }}>
+      <div
+        className='flex-col justify-center'
+        style={{ fontFamily: 'Arial, sans-serif', padding: '0px' }}>
         <Header />
         <IconsRow />
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <SelectionBox list={searchCharacterList} label={'Who is it?'} selectionMade={selection} />
         </div>
-        <StatsRow />
-        <Table entries={entries} matchCharacter={blackBeardMatch} />
+        <StatsRow
+          difficulty={target.difficulty}
+          totalGuesses={50}
+          averageGuesses={target.difficulty + 1}
+        />
+        <div>{entries.length > 10 && target.name}</div>
+        <Table entries={entries} matchCharacter={target} />
         {entries.length === 0 && emptyTableDisplay()}
-
+        <SearchBox<Character>
+          data={characterData}
+          keys={['name', 'moniker', 'affiliations']}
+          displayKey='name'
+          debounceMs={400}
+          maxVisible={10}
+          onSearch={handleSearch}
+          renderItem={(char) => (
+            <div>
+              <strong>{char.name}</strong>
+              <div className='text-m text-gray-500'>{char.moniker}</div>
+              <div className='text-m text-gray-500'>{char.affiliations.split(',')[0]}</div>
+            </div>
+          )}
+        />
       </div>
     </ErrorBoundary>
   );
 }
+function GuessingGameController() {
+  const [tChar, setTChar] = useState<Character>();
+  useEffect(() => {
+    setTChar(selectCharForGuessing())
+  }, [])
+  
+  return tChar && <BasicGuessingGame target={tChar} />;
+}
 
-export default BasicGuessingGame;
+export default GuessingGameController;

@@ -134,6 +134,9 @@ export async function scrapeCharacterDataFromURL(
       if (text === undefined) return '';
       return text;
     };
+    const cleanImageUrl = (imageUrl: string) => {
+      return imageUrl.split('.png')[0] + '.png'; // Keep everything up to and including .png
+    };
     const cleanAffiliations = (affiliations: string) => {
       if (!affiliations) return 'N/A';
       return affiliations
@@ -154,7 +157,7 @@ export async function scrapeCharacterDataFromURL(
     const tempCharacterData = {
       name: listCharacter.name,
       moniker: cleanMoniker(monikerLabel),
-      imageUrl: normalizeString(imageUrl),
+      imageUrl: cleanImageUrl(normalizeString(imageUrl)),
       height: heightFix(heightLabel),
       debut: buildDebut(),
       affiliations: cleanAffiliations(knownAffiliations),
@@ -233,7 +236,7 @@ export async function scrapeCharacterList() {
 export async function grabAllCharacterInfo(characterList: CharacterListEntry[]) {
   console.time('Scraping Character Data');
   const characterDataList: Character[] = [];
-  for (let i = 620; i < 1000; i++) {
+  for (let i = 0; i < characterList.length - 1; i++) {
     const newCharacter = await scrapeCharacterDataFromURL(characterList[i]);
     characterDataList.push(newCharacter);
   }
