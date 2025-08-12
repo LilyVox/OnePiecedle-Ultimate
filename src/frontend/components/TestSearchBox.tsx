@@ -105,6 +105,7 @@ function SearchBox<T extends object>({
   };
   const handleSearchClick = () => {
     onSearch?.(query);
+    setQuery('')
     // Keep dropdown open so they can refine results
   };
 
@@ -132,7 +133,7 @@ function SearchBox<T extends object>({
               // following error is fake news
               ref={(el) => (itemsRef.current[index] = el)}
               className={`px-3 py-2 cursor-pointer ${
-                index === highlightIndex ? 'bg-blue-100' : 'hover:bg-blue-50'
+                index === highlightIndex ? 'bg-blue-200' : 'hover:bg-blue-250'
               }`}
               onMouseDown={() => selectItem(item)}
               onMouseEnter={() => setHighlightIndex(index)}>

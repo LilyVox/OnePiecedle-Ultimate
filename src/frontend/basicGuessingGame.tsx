@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import SearchBox from './components/TestSearchBox';
 import { characterData } from '../backend/characterData';
-import type { Character, DevilFruitField, GuessShape, TableEntry } from '../backend/types';
-import { GuessCharacter } from './GuessCharacter';
+import type { Character } from '../backend/types';
 import ErrorBoundary from './components/ErrorBoundary';
 import './guessingGame.css';
 import { selectCharForGuessing, findCharDataByName } from '../backend/DataHandler';
+import { Table } from './components/Table';
 
 const Header = () => (
   <header
@@ -66,105 +66,6 @@ const StatsRow = ({
     </p>
   </div>
 );
-const formatEntryForTable = (char: Character): TableEntry => {
-  const dFruit: DevilFruitField = char.devilFruit;
-  let showFruit = '';
-  if (dFruit === 'Unknown') showFruit = dFruit.toString();
-  else if (Array.isArray(dFruit)) showFruit = dFruit[0].type;
-  else showFruit = dFruit.type;
-  const showAffiliations = char.affiliations;
-  return {
-    name: char.name,
-    debut: char.debut,
-    origin: char.origin,
-    devilFruit: showFruit,
-    bounty: char.bounty,
-    affiliations: showAffiliations,
-    age: char.age,
-    height: char.height,
-    status: char.status,
-    imageUrl: char.imageUrl,
-    index: char.index,
-  };
-};
-function compareCharacterEntry(match: Character, entryChar: Character) {
-  const guessChar = new GuessCharacter(match);
-  return guessChar.compareAll(entryChar);
-}
-const headers = [
-  '',
-  'Name',
-  'Debut',
-  'Origin',
-  'Devil Fruit',
-  'Bounty',
-  'Affiliations',
-  'Age',
-  'Height',
-  'Status',
-];
-const headerKeys = [
-  'name',
-  'debut',
-  'origin',
-  'devilFruit',
-  'bounty',
-  'affiliations',
-  'age',
-  'height',
-  'status',
-];
-const TableEntryWithComparison = ({
-  entry,
-  comparison,
-}: {
-  entry: TableEntry;
-  comparison: GuessShape;
-}) => {
-  return (
-    <tr key={entry.index}>
-      <td className='table_image'>
-        <img src={entry.imageUrl} alt='char icon' />
-      </td>
-      {headerKeys.map((header, i) => (
-        <td className={comparison[header as keyof GuessShape]} key={i}>
-          {entry[header as keyof TableEntry]}
-        </td>
-      ))}
-    </tr>
-  );
-};
-function Table({ matchCharacter, entries }: { matchCharacter: Character; entries: Character[] }) {
-  // compare entries against match character
-  // do I need to store the matchChar as a state..?
-  const showEntries = entries.map((entry) => formatEntryForTable(entry));
-  const comparedEntries = entries.map((entry) => compareCharacterEntry(matchCharacter, entry));
-
-  return (
-    <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '0' }}>
-      <thead>
-        <tr>
-          {headers.map((header, i) => (
-            <th
-              key={header + i}
-              style={{ borderBottom: '2px solid #ccc', padding: '00px', textAlign: 'center' }}>
-              {header}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {showEntries.map((entry, i) => (
-          <TableEntryWithComparison entry={entry} comparison={comparedEntries[i]} key={i} />
-        ))}
-      </tbody>
-    </table>
-  );
-}
-const emptyTableDisplay = () => {
-  return <div>Guess a character to get started...</div>;
-};
-
 function BasicGuessingGame({ target }: { target: Character }) {
   const [entries, setEntries] = useState<Character[]>([]);
   const updateEntries = (newEntry: Character) => setEntries([...entries, newEntry]);
@@ -190,11 +91,10 @@ function BasicGuessingGame({ target }: { target: Character }) {
         <StatsRow
           difficulty={target.difficulty}
           totalGuesses={50}
-          averageGuesses={target.difficulty + 1}
+          averageGuesses={target.difficulty * 3 + 5}
         />
         <div>{entries.length > 10 && target.name}</div>
         <Table entries={entries} matchCharacter={target} />
-        {entries.length === 0 && emptyTableDisplay()}
         <SearchBox<Character>
           data={characterData}
           keys={['name', 'moniker', 'affiliations']}

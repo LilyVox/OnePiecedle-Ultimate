@@ -5,8 +5,11 @@
   background-color: red;
 }
 .table_image img{
-  width: 100px;
-  height: 100px;
+  max-height: 100px;
+  object-fit: scale-down;
+}
+.table_image p{
+  padding-top: 0px;
 }
 .less {
   background-color: orange;
@@ -14,11 +17,18 @@
 .more{
   background-color: rgb(88, 61, 187);
 }
+.arrow {
+  background-image: url('down-arrow.svg');
+  background-size: 50% 50%;
+  background-repeat:no-repeat;
+  background-color: rgba(0, 0, 0, 0.4);
+}
 .some{
   background-color: orange;
 }
-td {
+td div {
   border-radius: 6px;
-  margin: 3px;
+  margin: auto;
+  
 
 }

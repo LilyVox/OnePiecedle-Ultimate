@@ -48,20 +48,6 @@ Saves data to a file. Requires a file name, the filetype, and an array of the da
 
 Where we utilize the scraper.
 
-### buildCharacterSearchList
-
-Builds the data required for the search bar. It's of shape:
-
-```js
-export interface SearchCharacter {
-  index: number;
-  name: string;
-  moniker: string;
-  mainAffiliation: string;
-  imageUrl: string | undefined;
-}
-```
-
 ### sampleCharacterInfo
 
 Grabs a couple of characters to test the scraper. Intend to move this to a test file.
