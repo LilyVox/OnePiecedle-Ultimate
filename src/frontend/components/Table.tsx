@@ -1,5 +1,11 @@
 import type React from 'react';
-import type { Character, TableEntry, DevilFruitField, GuessShape } from '../../backend/types';
+import {
+  type Character,
+  type TableEntry,
+  type DevilFruitField,
+  type GuessShape,
+  Comparison,
+} from '../../backend/types';
 import { GuessCharacter } from '../GuessCharacter';
 
 const formatEntryForTable = (char: Character): TableEntry => {
@@ -48,6 +54,37 @@ const headerKeys = [
   'height',
   'status',
 ];
+const arrowDisplay = (header: string, compared: string, entry: TableEntry) => {
+  if (!['debut', 'bounty', 'age', 'height'].includes(header))
+    return (
+      <div className={`${header} ${compared}`}>
+        <p>{entry[header as keyof TableEntry]}</p>
+      </div>
+    );
+  if (compared == Comparison.more) {
+    return (
+      <div className={`${header} ${compared} a_container`}>
+        <img src='up-arrow.svg' className='arrow' />
+        <p>{entry[header as keyof TableEntry]}</p>
+      </div>
+    );
+  }
+  if (compared == Comparison.less) {
+    return (
+      <div className={`${header} ${compared} a_container`}>
+        <img src='down-arrow.svg' className='arrow' />
+        <p>{entry[header as keyof TableEntry]}</p>
+      </div>
+    );
+  }
+  if (compared == Comparison.right) {
+    return (
+      <div className={`${header} ${compared}`}>
+        <p>{entry[header as keyof TableEntry]}</p>
+      </div>
+    );
+  }
+};
 const TableEntryWithComparison = ({
   entry,
   comparison,
@@ -58,17 +95,14 @@ const TableEntryWithComparison = ({
   return (
     <tr key={entry.index}>
       <td className='table_image flex flex-col justify-center'>
-        <img src={entry.imageUrl} alt='char icon' />
-        <p>{entry.name}</p>
+        <div>
+          <img src={entry.imageUrl} alt='char icon' />
+          <p>{entry.name}</p>
+        </div>
       </td>
       {headerKeys.map((header, i) => (
         <td className={`px-1`} key={i}>
-          <div className={`${header} ${comparison[header as keyof GuessShape]}`}>
-            <div className="arrow">
-            {entry[header as keyof TableEntry]}
-
-            </div>
-          </div>
+          {arrowDisplay(header, comparison[header as keyof GuessShape], entry)}
         </td>
       ))}
     </tr>

@@ -38,7 +38,7 @@ export class GuessCharacter {
       if (this.height === 'Unknown') {
         return Comparison.right;
       }
-      return Comparison.wrong;
+      return Comparison.more;
     }
     const ourHeight = this.grabNumber(this.height);
     const theirHeight = this.grabNumber(char.height);
@@ -62,7 +62,7 @@ export class GuessCharacter {
     if (ourDebut === theirDebut) return Comparison.right;
     if (ourDebut > theirDebut) return Comparison.more;
     if (ourDebut < theirDebut) return Comparison.less;
-    return Comparison.wrong;
+    return Comparison.less;
   };
   compareAffiliations = (char: Character) => {
     const ourAffiliations = this.affiliations.split(',');
@@ -98,13 +98,13 @@ export class GuessCharacter {
     return Comparison.wrong;
   };
   compareAge = (char: Character) => {
-    const ourAge = this.age;
-    const theirAge = char.age;
+    let ourAge = this.age;
+    let theirAge = char.age;
     if (ourAge.includes('Unknown')) {
-      if (theirAge.includes('Unknown')) {
-        return Comparison.right;
-      }
-      return Comparison.wrong;
+      ourAge = "0";
+    }
+    if (theirAge.includes('Unknown')) {
+      theirAge = "0"
     }
     const ourAgeN = Number(ourAge);
     const theirAgeN = Number(theirAge);

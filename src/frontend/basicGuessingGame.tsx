@@ -76,7 +76,9 @@ function BasicGuessingGame({ target }: { target: Character }) {
   const handleSearch = (query: string) => {
     console.log('Searching for:', query);
     const foundChar = findCharDataByName(query);
-    if (!entries.includes(foundChar)) selection(foundChar);
+    if(foundChar !== undefined){
+      if (!entries.includes(foundChar)) selection(foundChar);
+    }
   };
 
   return (

@@ -38,7 +38,7 @@ export const findCharDataByName = (search: string) => {
   const tempChar = characterData.find((char) => {
     if (char.name === search) return char;
   });
-  if (tempChar === undefined) return characterData[0];
+  if (tempChar === undefined) return;
   return tempChar;
 };
 export function selectCharForGuessing() {
