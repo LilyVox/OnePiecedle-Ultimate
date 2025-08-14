@@ -128,8 +128,9 @@ export class GuessCharacter {
   compareBounty = (char: Character) => {
     if (this.bounty === char.bounty) return Comparison.right;
     if (this.bounty === 'Unknown') return Comparison.less;
-    const ourBounty = Number(this.bounty.replace(',', ''));
-    const theirBounty = Number(char.bounty.replace(',', ''));
+    if (char.bounty === 'Unknown') return Comparison.more;
+    const ourBounty = Number(this.bounty.replace(/,/g, ''));
+    const theirBounty = Number(char.bounty.replace(/,/g, ''));
     if (ourBounty < theirBounty) return Comparison.less;
     if (ourBounty > theirBounty) return Comparison.more;
     if (ourBounty === theirBounty) return Comparison.right;

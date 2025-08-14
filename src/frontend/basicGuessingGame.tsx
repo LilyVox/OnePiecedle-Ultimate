@@ -6,6 +6,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import './guessingGame.css';
 import { selectCharForGuessing, findCharDataByName } from '../backend/DataHandler';
 import { Table } from './components/Table';
+import JSConfetti from 'js-confetti';
 
 const Header = () => (
   <header
@@ -76,11 +77,17 @@ function BasicGuessingGame({ target }: { target: Character }) {
   const handleSearch = (query: string) => {
     console.log('Searching for:', query);
     const foundChar = findCharDataByName(query);
-    if(foundChar !== undefined){
+    if (foundChar !== undefined) {
       if (!entries.includes(foundChar)) selection(foundChar);
     }
   };
-
+  const jsConfetti = new JSConfetti();
+  if (entries.includes(target)){
+    jsConfetti.addConfetti({
+      emojis: ['☠️', '🏴‍☠️ ', '💥', '✨', '🍖', '⚓'],
+      emojiSize: 100,
+      confettiNumber: 30,
+    });}
   return (
     <ErrorBoundary>
       <div
@@ -88,14 +95,13 @@ function BasicGuessingGame({ target }: { target: Character }) {
         style={{ fontFamily: 'Arial, sans-serif', padding: '0px' }}>
         <Header />
         <IconsRow />
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-        </div>
+        <div style={{ display: 'flex', justifyContent: 'center' }}></div>
         <StatsRow
           difficulty={target.difficulty}
           totalGuesses={50}
-          averageGuesses={target.difficulty * 3 + 5}
+          averageGuesses={target.difficulty * 3 + 7}
         />
-        <div>{entries.length > 10 && target.name}</div>
+        <div>{target.name}</div>
         <Table entries={entries} matchCharacter={target} />
         <SearchBox<Character>
           data={characterData}
@@ -119,9 +125,9 @@ function BasicGuessingGame({ target }: { target: Character }) {
 function GuessingGameController() {
   const [tChar, setTChar] = useState<Character>();
   useEffect(() => {
-    setTChar(selectCharForGuessing())
-  }, [])
-  
+    setTChar(selectCharForGuessing());
+  }, []);
+
   return tChar && <BasicGuessingGame target={tChar} />;
 }
 

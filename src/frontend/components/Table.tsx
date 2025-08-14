@@ -15,12 +15,23 @@ const formatEntryForTable = (char: Character): TableEntry => {
   else if (Array.isArray(dFruit)) showFruit = dFruit[0].type;
   else showFruit = dFruit.type;
   const showAffiliations = char.affiliations;
+  const showBounty = (bounty: string) => {
+    const scale = ['', 'K', 'M', 'B', 'T'];
+    const nums = bounty.split(',');
+    const zeroSets = nums.filter((segment) => segment === '000').length;
+    if (zeroSets < nums.length - 1) {
+      const newNums = `${nums[0]}.${nums[1].replace(/0/g,"")}${scale[zeroSets + 1]}`;
+      return newNums;
+    }
+    const newNums = `${nums[0]}${scale[zeroSets]}`;
+    return newNums;
+  };
   return {
     name: char.name,
     debut: char.debut,
     origin: char.origin,
     devilFruit: showFruit,
-    bounty: char.bounty,
+    bounty: showBounty(char.bounty),
     affiliations: showAffiliations,
     age: char.age,
     height: char.height,
@@ -61,7 +72,7 @@ const arrowDisplay = (header: string, compared: string, entry: TableEntry) => {
         <p>{entry[header as keyof TableEntry]}</p>
       </div>
     );
-  if (compared == Comparison.more) {
+  if (compared === Comparison.more) {
     return (
       <div className={`${header} ${compared} a_container`}>
         <img src='up-arrow.svg' className='arrow' />
@@ -69,7 +80,7 @@ const arrowDisplay = (header: string, compared: string, entry: TableEntry) => {
       </div>
     );
   }
-  if (compared == Comparison.less) {
+  if (compared === Comparison.less) {
     return (
       <div className={`${header} ${compared} a_container`}>
         <img src='down-arrow.svg' className='arrow' />
@@ -77,7 +88,7 @@ const arrowDisplay = (header: string, compared: string, entry: TableEntry) => {
       </div>
     );
   }
-  if (compared == Comparison.right) {
+  if (compared === Comparison.right) {
     return (
       <div className={`${header} ${compared}`}>
         <p>{entry[header as keyof TableEntry]}</p>
