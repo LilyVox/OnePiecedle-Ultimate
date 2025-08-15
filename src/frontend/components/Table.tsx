@@ -1,45 +1,8 @@
 import type React from 'react';
-import {
-  type Character,
-  type TableEntry,
-  type DevilFruitField,
-  type GuessShape,
-  Comparison,
-} from '../../backend/types';
+import { type Character, type TableEntry, type GuessShape, Comparison } from '../../backend/types';
 import { GuessCharacter } from '../GuessCharacter';
+import { formatEntryForDisplay } from './formatEntryForDisplay';
 
-const formatEntryForTable = (char: Character): TableEntry => {
-  const dFruit: DevilFruitField = char.devilFruit;
-  let showFruit = '';
-  if (dFruit === 'Unknown') showFruit = dFruit.toString();
-  else if (Array.isArray(dFruit)) showFruit = dFruit[0].type;
-  else showFruit = dFruit.type;
-  const showAffiliations = char.affiliations;
-  const showBounty = (bounty: string) => {
-    const scale = ['', 'K', 'M', 'B', 'T'];
-    const nums = bounty.split(',');
-    const zeroSets = nums.filter((segment) => segment === '000').length;
-    if (zeroSets < nums.length - 1) {
-      const newNums = `${nums[0]}.${nums[1].replace(/0/g,"")}${scale[zeroSets + 1]}`;
-      return newNums;
-    }
-    const newNums = `${nums[0]}${scale[zeroSets]}`;
-    return newNums;
-  };
-  return {
-    name: char.name,
-    debut: char.debut,
-    origin: char.origin,
-    devilFruit: showFruit,
-    bounty: showBounty(char.bounty),
-    affiliations: showAffiliations,
-    age: char.age,
-    height: char.height,
-    status: char.status,
-    imageUrl: char.imageUrl,
-    index: char.index,
-  };
-};
 function compareCharacterEntry(match: Character, entryChar: Character) {
   const guessChar = new GuessCharacter(match);
   return guessChar.compareAll(entryChar);
@@ -68,13 +31,13 @@ const headerKeys = [
 const arrowDisplay = (header: string, compared: string, entry: TableEntry) => {
   if (!['debut', 'bounty', 'age', 'height'].includes(header))
     return (
-      <div className={`${header} ${compared}`}>
+      <div className={`${header} ${compared}  p-4`}>
         <p>{entry[header as keyof TableEntry]}</p>
       </div>
     );
   if (compared === Comparison.more) {
     return (
-      <div className={`${header} ${compared} a_container`}>
+      <div className={`${header} ${compared} a_container p-2`}>
         <img src='up-arrow.svg' className='arrow' />
         <p>{entry[header as keyof TableEntry]}</p>
       </div>
@@ -82,7 +45,7 @@ const arrowDisplay = (header: string, compared: string, entry: TableEntry) => {
   }
   if (compared === Comparison.less) {
     return (
-      <div className={`${header} ${compared} a_container`}>
+      <div className={`${header} ${compared} a_container p-2`}>
         <img src='down-arrow.svg' className='arrow' />
         <p>{entry[header as keyof TableEntry]}</p>
       </div>
@@ -90,7 +53,7 @@ const arrowDisplay = (header: string, compared: string, entry: TableEntry) => {
   }
   if (compared === Comparison.right) {
     return (
-      <div className={`${header} ${compared}`}>
+      <div className={`${header} ${compared} p-4 h-full`}>
         <p>{entry[header as keyof TableEntry]}</p>
       </div>
     );
@@ -104,15 +67,13 @@ const TableEntryWithComparison = ({
   comparison: GuessShape;
 }) => {
   return (
-    <tr key={entry.index}>
-      <td className='table_image flex flex-col justify-center'>
-        <div>
+    <tr key={entry.index} className=''>
+      <td className='table_image flex flex-col table-cell justify-center align-middle p-1'>
           <img src={entry.imageUrl} alt='char icon' />
           <p>{entry.name}</p>
-        </div>
       </td>
       {headerKeys.map((header, i) => (
-        <td className={`px-1`} key={i}>
+        <td className={`px-1 p-4`} key={i}>
           {arrowDisplay(header, comparison[header as keyof GuessShape], entry)}
         </td>
       ))}
@@ -120,7 +81,7 @@ const TableEntryWithComparison = ({
   );
 };
 const emptyTableDisplay = () => {
-  return <div>Guess a character to get started...</div>;
+  return <div className='p-4'>Guess a character to get started...</div>;
 };
 export function Table({
   matchCharacter,
@@ -131,17 +92,20 @@ export function Table({
 }) {
   // compare entries against match character
   // do I need to store the matchChar as a state..?
-  const showEntries = entries.map((entry) => formatEntryForTable(entry));
+  const showEntries = entries.map((entry) => formatEntryForDisplay(entry));
   const comparedEntries = entries.map((entry) => compareCharacterEntry(matchCharacter, entry));
 
   return (
-    <table className='m-auto' style={{ width: '100%', borderCollapse: 'collapse', marginTop: '0' }}>
+    <table
+      className='m-auto table-auto'
+      style={{ width: '100%', borderCollapse: 'collapse', marginTop: '0' }}>
       <thead>
         <tr>
           {headers.map((header, i) => (
             <th
               key={header + i}
-              style={{ borderBottom: '2px solid #ccc', padding: '00px', textAlign: 'center' }}>
+              className='p-6 pb-0'
+              style={{ borderBottom: '2px solid #ccc', textAlign: 'center' }}>
               {header}
             </th>
           ))}

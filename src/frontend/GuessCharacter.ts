@@ -163,15 +163,15 @@ export class GuessCharacter {
   compareAll = (char: Character): GuessShape => {
     return {
       name: char.name,
-      height: this.compareHeight(char),
       // mDebut: this.compareMangaDebut(char),
       debut: this.compareAnimeDebut(char),
       affiliations: this.softCompareAffiliations(char),
       origin: this.compareOrigins(char),
-      age: this.compareAge(char),
-      status: this.compareStatus(char),
       bounty: this.compareBounty(char),
       devilFruit: this.compareDevilFruitType(char),
+      age: this.compareAge(char),
+      status: this.compareStatus(char),
+      height: this.compareHeight(char),
     };
   };
 }

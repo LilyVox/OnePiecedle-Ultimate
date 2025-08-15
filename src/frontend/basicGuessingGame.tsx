@@ -7,6 +7,7 @@ import './guessingGame.css';
 import { selectCharForGuessing, findCharDataByName } from '../backend/DataHandler';
 import { Table } from './components/Table';
 import JSConfetti from 'js-confetti';
+import { ClueBoard } from './components/ClueBoard';
 
 const Header = () => (
   <header
@@ -20,7 +21,6 @@ const Header = () => (
     <h1>One Piecedle - Not Enough Characters</h1>
   </header>
 );
-
 const IconsRow = () => (
   <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', margin: '0' }}>
     <img
@@ -82,12 +82,13 @@ function BasicGuessingGame({ target }: { target: Character }) {
     }
   };
   const jsConfetti = new JSConfetti();
-  if (entries.includes(target)){
+  if (entries.includes(target)) {
     jsConfetti.addConfetti({
       emojis: ['☠️', '🏴‍☠️ ', '💥', '✨', '🍖', '⚓'],
       emojiSize: 100,
       confettiNumber: 30,
-    });}
+    });
+  }
   return (
     <ErrorBoundary>
       <div
@@ -101,7 +102,7 @@ function BasicGuessingGame({ target }: { target: Character }) {
           totalGuesses={50}
           averageGuesses={target.difficulty * 3 + 7}
         />
-        <div>{target.name}</div>
+        <ClueBoard entries={entries} target={target} />
         <Table entries={entries} matchCharacter={target} />
         <SearchBox<Character>
           data={characterData}

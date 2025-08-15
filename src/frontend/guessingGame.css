@@ -7,6 +7,7 @@
 .table_image img {
   max-height: 100px;
   object-fit: scale-down;
+  margin: auto;
 }
 .table_image p {
   padding-top: 0px;

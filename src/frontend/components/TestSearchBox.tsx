@@ -145,7 +145,7 @@ function SearchBox<T extends object>({
       </div>
       <button
         onClick={handleSearchClick}
-        className='bg-blue-500 text-white px-4 rounded-r hover:bg-blue-600 focus:outline-none h-max'>
+        className='bg-blue-500 dark:bg-gray-900 text-white px-4 py-2 rounded-r hover:bg-blue-600 dark:hover:bg-gray-800 focus:outline-none h-max'>
         Search
       </button>
     </div>

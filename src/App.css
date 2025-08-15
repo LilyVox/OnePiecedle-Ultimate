@@ -3,9 +3,11 @@
   margin: 0 auto;
   padding: .2rem;
   text-align: center;
-  background-color: #1a3742;
 }
 
 .card {
   padding: 1em;
+}
+tr:nth-child(even){
+  background-color: #1e293b;
 }

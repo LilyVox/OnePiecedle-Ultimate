@@ -56,13 +56,13 @@ export interface TableEntry {
 }
 export interface GuessShape {
   name: string;
-  height: string;
   // mDebut: string;
-  debut: string;
-  affiliations: string;
-  origin: string;
-  age: string;
-  status: string;
-  bounty: string;
   devilFruit: string;
+  origin: string;
+  bounty: string;
+  affiliations: string;
+  age: string;
+  debut: string;
+  status: string;
+  height: string;
 }
