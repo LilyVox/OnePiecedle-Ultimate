@@ -1,7 +1,10 @@
 import type React from 'react';
+import { useEffect, useRef } from 'react';
 import { type Character, type TableEntry, type GuessShape, Comparison } from '../../backend/types';
 import { GuessCharacter } from '../GuessCharacter';
 import { formatEntryForDisplay } from './formatEntryForDisplay';
+import DownArrow from '../../assets/down-arrow.svg';
+import UpArrow from '../../assets/up-arrow.svg';
 
 function compareCharacterEntry(match: Character, entryChar: Character) {
   const guessChar = new GuessCharacter(match);
@@ -38,7 +41,7 @@ const arrowDisplay = (header: string, compared: string, entry: TableEntry) => {
   if (compared === Comparison.more) {
     return (
       <div className={`${header} ${compared} a_container p-2`}>
-        <img src='up-arrow.svg' className='arrow' />
+        <img src={UpArrow} className='arrow' />
         <p>{entry[header as keyof TableEntry]}</p>
       </div>
     );
@@ -46,7 +49,7 @@ const arrowDisplay = (header: string, compared: string, entry: TableEntry) => {
   if (compared === Comparison.less) {
     return (
       <div className={`${header} ${compared} a_container p-2`}>
-        <img src='down-arrow.svg' className='arrow' />
+        <img src={DownArrow} className='arrow' />
         <p>{entry[header as keyof TableEntry]}</p>
       </div>
     );
@@ -66,14 +69,25 @@ const TableEntryWithComparison = ({
   entry: TableEntry;
   comparison: GuessShape;
 }) => {
+  const rowRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (rowRef.current) {
+      rowRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+    return () => {};
+  }, []);
+
   return (
-    <tr key={entry.index} className=''>
-      <td className='table_image flex flex-col table-cell justify-center align-middle p-1'>
-          <img src={entry.imageUrl} alt='char icon' />
-          <p>{entry.name}</p>
+    <tr key={entry.index} className='' ref={rowRef}>
+      <td className='table_image flex-col table-cell justify-center align-middle p-1'>
+        <img src={entry.imageUrl} alt='char icon' />
+        <p>{entry.name}</p>
       </td>
       {headerKeys.map((header, i) => (
-        <td className={`px-1 p-4`} key={i}>
+        <td
+          className={`px-1 p-4 opacity-0 [transform:rotateY(90deg)] [transform-origin:left_center] animate-[flipIn_0.6s_forwards]`}
+          key={i}
+          style={{ animationDelay: `${i * 0.15}s` }}>
           {arrowDisplay(header, comparison[header as keyof GuessShape], entry)}
         </td>
       ))}
@@ -97,7 +111,7 @@ export function Table({
 
   return (
     <table
-      className='m-auto table-auto'
+      className='m-auto table-auto [perspective:1000px]'
       style={{ width: '100%', borderCollapse: 'collapse', marginTop: '0' }}>
       <thead>
         <tr>

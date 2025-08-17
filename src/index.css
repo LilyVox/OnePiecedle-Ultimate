@@ -58,3 +58,14 @@ button:focus-visible {
   border-color: #646cff;
 }
 }
+
+@keyframes flipIn {
+  from {
+    transform: rotateY(90deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+}

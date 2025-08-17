@@ -29,7 +29,7 @@ const ClueButton = ({
       {placeholder}
     </button>
   ) : (
-    <button className='flex-1 bg-gray-300 dark:bg-amber-600 text-gray-900 dark:text-white rounded-lg h-24 flex justify-center items-center p-4 h-fit'>
+    <button className='flex-1 bg-gray-300 dark:bg-amber-600 text-gray-900 dark:text-white rounded-lg flex justify-center items-center p-4 h-fit'>
       {clue}
     </button>
   );
@@ -43,7 +43,7 @@ export const ClueBoard = ({ entries, target }: { entries: Character[]; target: C
   const [clueTwo, setClueTwo] = useState<string>('');
   const [clueThree, setClueThree] = useState<string>('');
   const countdown = (guessesLeft: string | number) => {
-    return Number(guessesLeft) - entries.length;
+    return Math.max(Number(guessesLeft) - entries.length, 0);
   };
   const unlockOnce = (countdown: number) => {
     return countdown === 0;
@@ -61,10 +61,19 @@ export const ClueBoard = ({ entries, target }: { entries: Character[]; target: C
   function findClueToGive(previousClue: string) {
     if (entries.length < 2) {
       console.log('oops not enough entries');
-      return '';
+      return 'Something Broke.';
     }
     const guessTarget = new GuessCharacter(target);
-    const guessKeys = Object.keys(guessTarget.compareAll(entries[0]));
+    const guessKeys = [
+      'devilFruit',
+      'origin',
+      'bounty',
+      'affiliations',
+      'debut',
+      'age',
+      'status',
+      'height',
+    ];
     const correctGuesses = ['name', previousClue];
     entries.forEach((entry) => {
       const compared = guessTarget.compareAll(entry);

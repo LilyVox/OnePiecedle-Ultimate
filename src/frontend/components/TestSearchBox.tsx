@@ -73,6 +73,9 @@ function SearchBox<T extends object>({
     setQuery(e.target.value);
     setShowDropdown(true);
     setHighlightIndex(-1);
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
   };
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (!showDropdown || results.length === 0) {
@@ -105,43 +108,43 @@ function SearchBox<T extends object>({
   };
   const handleSearchClick = () => {
     onSearch?.(query);
-    setQuery('')
+    setQuery('');
     // Keep dropdown open so they can refine results
   };
 
   return (
     <div className='flex flex-row w-max justify-center m-auto ' ref={containerRef}>
-      <div className="flex-col">
-      <input
-        type='text'
-        value={query}
-        onChange={handleChange}
-        onFocus={() => setShowDropdown(true)}
-        onKeyDown={handleKeyDown}
-        placeholder={placeholder}
-        className='border rounded px-3 py-2 shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none'
-      />
-      {showDropdown && results.length > 0 && (
-        <div
-          className='mt-0 bg-orange-300 border rounded shadow-lg z-50 w-full overflow-y-auto'
-          style={{
-            maxHeight: `${maxVisible * 2.5}rem`, // ~2.5rem per item
-          }}>
-          {results.map((item, index) => (
-            <div
-              key={index}
-              // following error is fake news
-              ref={(el) => (itemsRef.current[index] = el)}
-              className={`px-3 py-2 cursor-pointer ${
-                index === highlightIndex ? 'bg-blue-200' : 'hover:bg-blue-250'
-              }`}
-              onMouseDown={() => selectItem(item)}
-              onMouseEnter={() => setHighlightIndex(index)}>
-              {renderItem(item)}
-            </div>
-          ))}
-        </div>
-      )}
+      <div className='flex-col'>
+        <input
+          type='text'
+          value={query}
+          onChange={handleChange}
+          onFocus={() => setShowDropdown(true)}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder}
+          className='border rounded px-3 py-2 shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none'
+        />
+        {showDropdown && results.length > 0 && (
+          <div
+            className='mt-0 bg-orange-300 border rounded shadow-lg z-50 w-full overflow-y-auto'
+            style={{
+              maxHeight: `${maxVisible * 2.5}rem`, // ~2.5rem per item
+            }}>
+            {results.map((item, index) => (
+              <div
+                key={index}
+                // following error is fake news
+                ref={(el) => (itemsRef.current[index] = el)}
+                className={`px-3 py-2 cursor-pointer ${
+                  index === highlightIndex ? 'bg-blue-200' : 'hover:bg-blue-250'
+                }`}
+                onMouseDown={() => selectItem(item)}
+                onMouseEnter={() => setHighlightIndex(index)}>
+                {renderItem(item)}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <button
         onClick={handleSearchClick}

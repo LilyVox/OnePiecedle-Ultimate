@@ -81,14 +81,16 @@ function BasicGuessingGame({ target }: { target: Character }) {
       if (!entries.includes(foundChar)) selection(foundChar);
     }
   };
-  const jsConfetti = new JSConfetti();
-  if (entries.includes(target)) {
-    jsConfetti.addConfetti({
-      emojis: ['☠️', '🏴‍☠️ ', '💥', '✨', '🍖', '⚓'],
-      emojiSize: 100,
-      confettiNumber: 30,
-    });
-  }
+  useEffect(()=>{
+    const jsConfetti = new JSConfetti();
+    if (entries.includes(target)) {
+      jsConfetti.addConfetti({
+        emojis: ['☠️', '🏴‍☠️ ', '💥', '✨', '🍖', '⚓'],
+        emojiSize: 100,
+        confettiNumber: 30,
+      });
+    }
+  }, [entries, target])
   return (
     <ErrorBoundary>
       <div
