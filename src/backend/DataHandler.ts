@@ -1,6 +1,5 @@
 import { characterData } from './characterData';
 import { characterList } from './characterList';
-import { saveDataToFile } from './utils';
 import { grabSampleCharacterInfo, initCharacterData } from './scraper';
 import type { CharacterListEntry } from './types';
 

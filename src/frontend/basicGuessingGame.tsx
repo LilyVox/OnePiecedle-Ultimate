@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import SearchBox from './components/TestSearchBox';
+import SearchBox from './components/SearchBox';
 import { characterData } from '../backend/characterData';
 import type { Character } from '../backend/types';
 import ErrorBoundary from './components/ErrorBoundary';
 import './guessingGame.css';
-import { selectCharForGuessing, findCharDataByName } from '../backend/DataHandler';
+import { selectCharForGuessing, findCharDataByIndex } from '../backend/DataHandler';
 import { Table } from './components/Table';
 import JSConfetti from 'js-confetti';
 import { ClueBoard } from './components/ClueBoard';
@@ -74,9 +74,9 @@ function BasicGuessingGame({ target }: { target: Character }) {
     updateEntries(item);
     return item;
   };
-  const handleSearch = (query: string) => {
+  const handleSearch = (query: string, char:Character) => {
     console.log('Searching for:', query);
-    const foundChar = findCharDataByName(query);
+    const foundChar = findCharDataByIndex(char.index);
     if (foundChar !== undefined) {
       if (!entries.includes(foundChar)) selection(foundChar);
     }
@@ -87,7 +87,7 @@ function BasicGuessingGame({ target }: { target: Character }) {
       jsConfetti.addConfetti({
         emojis: ['☠️', '🏴‍☠️ ', '💥', '✨', '🍖', '⚓'],
         emojiSize: 100,
-        confettiNumber: 30,
+        confettiNumber: 60,
       });
     }
   }, [entries, target])

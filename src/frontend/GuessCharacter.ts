@@ -85,7 +85,7 @@ export class GuessCharacter {
       if (theirAffiliations.includes(entry)) correctAffiliations.push(entry);
     });
     if (correctAffiliations.length === 0) return Comparison.wrong;
-    if (correctAffiliations.length === theirAffiliations.length) return Comparison.right;
+    if (correctAffiliations.length === ourAffiliations.length) return Comparison.right;
     if (correctAffiliations.length > 0) return Comparison.some;
     return Comparison.wrong;
   };

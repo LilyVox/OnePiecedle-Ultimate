@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 import { useEffect, useRef } from 'react';
 import { type Character, type TableEntry, type GuessShape, Comparison } from '../../backend/types';
 import { GuessCharacter } from '../GuessCharacter';
@@ -69,13 +69,14 @@ const TableEntryWithComparison = ({
   entry: TableEntry;
   comparison: GuessShape;
 }) => {
-  const rowRef = useRef<HTMLDivElement>(null);
+  const rowRef = useRef<HTMLTableRowElement>(null);
   useEffect(() => {
     if (rowRef.current) {
-      rowRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+      rowRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
     return () => {};
   }, []);
+  const showTime = 2; // really doesn't like anything but 2 or 3...
 
   return (
     <tr key={entry.index} className='' ref={rowRef}>
@@ -85,9 +86,9 @@ const TableEntryWithComparison = ({
       </td>
       {headerKeys.map((header, i) => (
         <td
-          className={`px-1 p-4 opacity-0 [transform:rotateY(90deg)] [transform-origin:left_center] animate-[flipIn_0.6s_forwards]`}
+          className={`px-1 p-4 opacity-0 [transform:rotateY(90deg)] [transform-origin:left_center] animate-[flipIn_${showTime}s_forwards]`}
           key={i}
-          style={{ animationDelay: `${i * 0.15}s` }}>
+          style={{ animationDelay: `${showTime/8 * i}s` }}>
           {arrowDisplay(header, comparison[header as keyof GuessShape], entry)}
         </td>
       ))}
@@ -95,7 +96,7 @@ const TableEntryWithComparison = ({
   );
 };
 const emptyTableDisplay = () => {
-  return <div className='p-4'>Guess a character to get started...</div>;
+  return <p className='p-4'>Guess a character to get started...</p>;
 };
 export function Table({
   matchCharacter,
@@ -110,27 +111,29 @@ export function Table({
   const comparedEntries = entries.map((entry) => compareCharacterEntry(matchCharacter, entry));
 
   return (
-    <table
-      className='m-auto table-auto [perspective:1000px]'
-      style={{ width: '100%', borderCollapse: 'collapse', marginTop: '0' }}>
-      <thead>
-        <tr>
-          {headers.map((header, i) => (
-            <th
-              key={header + i}
-              className='p-6 pb-0'
-              style={{ borderBottom: '2px solid #ccc', textAlign: 'center' }}>
-              {header}
-            </th>
+    <>
+      <table
+        className='m-auto table-auto [perspective:1000px]'
+        style={{ width: '100%', borderCollapse: 'collapse', marginTop: '0' }}>
+        <thead>
+          <tr>
+            {headers.map((header, i) => (
+              <th
+                key={header + i}
+                className='p-6 pb-0'
+                style={{ borderBottom: '2px solid #ccc', textAlign: 'center' }}>
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {showEntries.map((entry, i) => (
+            <TableEntryWithComparison entry={entry} comparison={comparedEntries[i]} key={i} />
           ))}
-        </tr>
-      </thead>
-      <tbody>
-        {showEntries.map((entry, i) => (
-          <TableEntryWithComparison entry={entry} comparison={comparedEntries[i]} key={i} />
-        ))}
-        {entries.length === 0 && emptyTableDisplay()}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+      {entries.length === 0 && emptyTableDisplay()}
+    </>
   );
 }

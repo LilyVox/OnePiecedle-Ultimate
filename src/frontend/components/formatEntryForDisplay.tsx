@@ -9,14 +9,14 @@ export function formatEntryForDisplay(char: Character): TableEntry {
   const showAffiliations = char.affiliations;
   const showBounty = (bounty: string) => {
     const scale = ['', 'K', 'M', 'B', 'T'];
-    const nums = bounty.split(',');
-    const zeroSets = nums.filter((segment) => segment === '000').length;
-    if (zeroSets < nums.length - 1) {
-      const newNums = `${nums[0]}.${nums[1].replace(/0/g, "")}${scale[zeroSets + 1]}`;
-      return newNums;
+    const segments = bounty.split(',');
+    const zeroSets = segments.filter((segment) => segment === '000').length;
+    if (zeroSets < segments.length - 1) {
+      const newSegments = `${segments[0]}.${segments[1].replace(/0/g, "")}${scale[zeroSets + 1]}`;
+      return newSegments;
     }
-    const newNums = `${nums[0]}${scale[zeroSets]}`;
-    return newNums;
+    const newSegments = `${segments[0]}${scale[zeroSets]}`;
+    return newSegments;
   };
   return {
     name: char.name,

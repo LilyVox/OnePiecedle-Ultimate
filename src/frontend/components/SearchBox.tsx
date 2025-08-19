@@ -8,7 +8,7 @@ interface SearchBoxProps<T> {
   displayKey: keyof T; // Key to display in input on select
   debounceMs?: number;
   maxVisible?: number;
-  onSearch?: (query: string) => void; // Fires when search button clicked or enter pressed
+  onSearch?: (query: string, result: T) => void; // Fires when search button clicked or enter pressed
   renderItem: (item: T) => React.ReactNode;
 }
 
@@ -24,6 +24,7 @@ function SearchBox<T extends object>({
 }: SearchBoxProps<T>) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<T[]>([]);
+  const [resultPass, setResultPass] = useState<T>();
   const [showDropdown, setShowDropdown] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -80,7 +81,7 @@ function SearchBox<T extends object>({
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (!showDropdown || results.length === 0) {
       if (e.key === 'Enter') {
-        onSearch?.(query);
+        handleSearchClick()
       }
       return;
     }
@@ -94,22 +95,24 @@ function SearchBox<T extends object>({
     } else if (e.key === 'Enter') {
       e.preventDefault();
       if (highlightIndex >= 0 && results[highlightIndex]) {
-        selectItem(results[highlightIndex]); // closes dropdown
+        selectItem(results[highlightIndex]);
       } else {
-        onSearch?.(query); // keeps dropdown open
+          handleSearchClick()
       }
     }
   };
   const selectItem = (item: T) => {
     setQuery(String(item[displayKey]));
+    setResultPass(item);
     setShowDropdown(false);
     setHighlightIndex(-1);
     // onSearch?.(String(item[displayKey]));
   };
   const handleSearchClick = () => {
-    onSearch?.(query);
+    if (resultPass) {
+      onSearch?.(query, resultPass);
+    }
     setQuery('');
-    // Keep dropdown open so they can refine results
   };
 
   return (
