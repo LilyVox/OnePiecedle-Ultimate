@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { howManyDifficulty, maxDifficulty, getDailyCharacter } from '../backend/DataHandler';
+import { selectRandomCharForGuessing } from '../backend/DataHandler';
 import type { Character } from '../backend/types';
 import GuessingGameCore from './GuessingGameCore';
 import { Link } from 'react-router';
@@ -33,23 +33,18 @@ export const IconsRow = () => (
     <img src='laugh-icon.png' alt='Laugh Guesser' style={{ width: '50px', height: '50px' }} />
   </div>
 );
-const DailyHeader = ({date}: {date: Date})=>{
-  return (<div>{date.toLocaleDateString()}</div>)
-}
 
-export default function DailyGameController() {
+export default function GuessingGameController() {
   const [tChar, setTChar] = useState<Character>();
-  const [gameDate, setGameDate] = useState<Date>(new Date());
   useEffect(() => {
-    setTChar(getDailyCharacter(gameDate));
-  }, [gameDate]);
-  console.log(maxDifficulty(), howManyDifficulty())
+    setTChar(selectRandomCharForGuessing());
+  }, []);
+
   return (
     tChar && (
       <GuessingGameCore target={tChar}>
         <Header />
         <IconsRow />
-        <DailyHeader date={gameDate} />
       </GuessingGameCore>
     )
   );

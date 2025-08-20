@@ -76,7 +76,6 @@ const TableEntryWithComparison = ({
     }
     return () => {};
   }, []);
-  const showTime = 2; // really doesn't like anything but 2 or 3...
 
   return (
     <tr key={entry.index} className='' ref={rowRef}>
@@ -86,9 +85,9 @@ const TableEntryWithComparison = ({
       </td>
       {headerKeys.map((header, i) => (
         <td
-          className={`px-1 p-4 opacity-0 [transform:rotateY(90deg)] [transform-origin:left_center] animate-[flipIn_${showTime}s_forwards]`}
+          className={`px-1 p-4 opacity-0 [transform:rotateY(90deg)] [transform-origin:left_center] animate-[flipIn_2s_forwards]`}
           key={i}
-          style={{ animationDelay: `${showTime/8 * i}s` }}>
+          style={{ animationDelay: `${.25 * i}s` }}>
           {arrowDisplay(header, comparison[header as keyof GuessShape], entry)}
         </td>
       ))}

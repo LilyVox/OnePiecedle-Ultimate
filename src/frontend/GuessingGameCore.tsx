@@ -4,38 +4,12 @@ import { characterData } from '../backend/characterData';
 import type { Character } from '../backend/types';
 import ErrorBoundary from './components/ErrorBoundary';
 import './guessingGame.css';
-import { selectCharForGuessing, findCharDataByIndex } from '../backend/DataHandler';
+import {
+  findCharDataByIndex
+} from '../backend/DataHandler';
 import { Table } from './components/Table';
 import JSConfetti from 'js-confetti';
 import { ClueBoard } from './components/ClueBoard';
-
-const Header = () => (
-  <header
-    style={{
-      marginBlockStart: '0px',
-      fontSize: '1rem',
-      textAlign: 'center',
-      margin: '10px 0',
-      fontFamily: 'Georgia, serif',
-    }}>
-    <h1>One Piecedle - Not Enough Characters</h1>
-  </header>
-);
-const IconsRow = () => (
-  <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', margin: '0' }}>
-    <img
-      src='character-icon.png'
-      alt='Character Guesser'
-      style={{ width: '50px', height: '50px' }}
-    />
-    <img
-      src='devilfruit-icon.png'
-      alt='Devilfruit Guesser'
-      style={{ width: '50px', height: '50px' }}
-    />
-    <img src='laugh-icon.png' alt='Laugh Guesser' style={{ width: '50px', height: '50px' }} />
-  </div>
-);
 
 const StatsRow = ({
   difficulty,
@@ -67,21 +41,21 @@ const StatsRow = ({
     </p>
   </div>
 );
-function BasicGuessingGame({ target }: { target: Character }) {
+export default function GuessingGameCore({ target, children }: { target: Character, children: React.ReactNode }) {
   const [entries, setEntries] = useState<Character[]>([]);
   const updateEntries = (newEntry: Character) => setEntries([...entries, newEntry]);
   const selection = (item: Character) => {
     updateEntries(item);
     return item;
   };
-  const handleSearch = (query: string, char:Character) => {
+  const handleSearch = (query: string, char: Character) => {
     console.log('Searching for:', query);
     const foundChar = findCharDataByIndex(char.index);
     if (foundChar !== undefined) {
       if (!entries.includes(foundChar)) selection(foundChar);
     }
   };
-  useEffect(()=>{
+  useEffect(() => {
     const jsConfetti = new JSConfetti();
     if (entries.includes(target)) {
       jsConfetti.addConfetti({
@@ -90,21 +64,19 @@ function BasicGuessingGame({ target }: { target: Character }) {
         confettiNumber: 60,
       });
     }
-  }, [entries, target])
+  }, [entries, target]);
   return (
     <ErrorBoundary>
       <div
         className='flex-col justify-center'
         style={{ fontFamily: 'Arial, sans-serif', padding: '0px' }}>
-        <Header />
-        <IconsRow />
-        <div style={{ display: 'flex', justifyContent: 'center' }}></div>
+        {children}
+        <ClueBoard entries={entries} target={target} />
         <StatsRow
           difficulty={target.difficulty}
           totalGuesses={50}
           averageGuesses={target.difficulty * 3 + 7}
         />
-        <ClueBoard entries={entries} target={target} />
         <Table entries={entries} matchCharacter={target} />
         <SearchBox<Character>
           data={characterData}
@@ -114,10 +86,16 @@ function BasicGuessingGame({ target }: { target: Character }) {
           maxVisible={10}
           onSearch={handleSearch}
           renderItem={(char) => (
-            <div>
-              <strong>{char.name}</strong>
-              <div className='text-m text-gray-500'>{char.moniker}</div>
-              <div className='text-m text-gray-500'>{char.affiliations.split(',')[0]}</div>
+            <div className='flex flex-row justify-center'>
+              <img
+                className='table_image flex-col table-cell justify-center align-middle p-1 max-h-24 object-scale-down'
+                src={char.imageUrl}
+              />
+              <div>
+                <strong>{char.name}</strong>
+                <div className='text-m text-gray-500'>{char.moniker}</div>
+                <div className='text-m text-gray-500'>{char.affiliations.split(',')[0]}</div>
+              </div>
             </div>
           )}
         />
@@ -125,13 +103,3 @@ function BasicGuessingGame({ target }: { target: Character }) {
     </ErrorBoundary>
   );
 }
-function GuessingGameController() {
-  const [tChar, setTChar] = useState<Character>();
-  useEffect(() => {
-    setTChar(selectCharForGuessing());
-  }, []);
-
-  return tChar && <BasicGuessingGame target={tChar} />;
-}
-
-export default GuessingGameController;

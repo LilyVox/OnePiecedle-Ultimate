@@ -1,6 +1,7 @@
 import React from 'react';
 import LiveClock from './components/LiveClock';
 import { Link } from 'react-router';
+import MiniCalendarButton from './components/Calendar';
 
 // Updated Header Component
 const Header = () => (
@@ -20,11 +21,9 @@ const Header = () => (
 );
 
 // Button Component
-const Button = ({ label, location }: { label: string; location: string; }) => (
-  <Link to={location} >
-    <button style={{ margin: '10px', padding: '10px 20px', fontSize: '16px' }}>
-    {label}
-    </button>
+const Button = ({ label, location }: { label: string; location: string }) => (
+  <Link to={location}>
+    <button style={{ margin: '10px', padding: '10px 20px', fontSize: '16px' }}>{label}</button>
   </Link>
 );
 
@@ -71,7 +70,10 @@ const HomeScreen = () => {
             <LiveClock />
           </CardHeading>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Button label='Daily Game' location='daily' />
+            <div>
+              <Button label='Daily Game' location='daily' />
+              <MiniCalendarButton />
+            </div>
             <Button label='Guess the Laugh' location='' />
             <Button label='Guess the Fruit' location='' />
           </div>
@@ -79,7 +81,7 @@ const HomeScreen = () => {
         <hr
           style={{
             border: 'dashed 2px',
-            color: "rgba(0, 0, 0, 0.1)",
+            color: 'rgba(0, 0, 0, 0.1)',
             borderRadius: '5px',
           }}
         />

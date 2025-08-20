@@ -77,6 +77,12 @@ function SearchBox<T extends object>({
     if (containerRef.current) {
       containerRef.current.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
+    if(itemsRef.current[0]){
+      itemsRef.current[0]?.scrollIntoView({
+        block: 'nearest',
+        behavior: 'smooth',
+      });
+    }
   };
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (!showDropdown || results.length === 0) {

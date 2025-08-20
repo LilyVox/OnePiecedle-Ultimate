@@ -50,6 +50,7 @@ export const ClueBoard = ({ entries, target }: { entries: Character[]; target: C
   };
   const clueDisplay = (clueKey: string) => {
     const displayChar = formatEntryForDisplay(target);
+    if(clueKey === "no help left") return "You're on your own!"
     return `${clueKey}: ${displayChar[clueKey as keyof TableEntry]}`;
   };
   const setClue = (
@@ -88,6 +89,7 @@ export const ClueBoard = ({ entries, target }: { entries: Character[]; target: C
       return true;
     });
     console.log('remaining keys', remainingKeys);
+    if(remainingKeys.length < 1) return "no help left"
     return remainingKeys[0];
   }
   return (
