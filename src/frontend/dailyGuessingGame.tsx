@@ -1,9 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { howManyDifficulty, maxDifficulty, getDailyCharacter } from '../backend/DataHandler';
+import React, {
+  useState,
+  useEffect,
+  type Dispatch,
+  type SetStateAction,
+  type ChangeEvent,
+} from 'react';
+import { getDailyCharacter } from '../backend/DataHandler';
 import type { Character } from '../backend/types';
 import GuessingGameCore from './GuessingGameCore';
 import { Link } from 'react-router';
+import { Modal } from './components/Modal';
 
+const dateTransform = (d: Date) => {
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate() + 1}`;
+};
 export const Header = () => (
   <header
     style={{
@@ -33,9 +43,59 @@ export const IconsRow = () => (
     <img src='laugh-icon.png' alt='Laugh Guesser' style={{ width: '50px', height: '50px' }} />
   </div>
 );
-const DailyHeader = ({date}: {date: Date})=>{
-  return (<div>{date.toLocaleDateString()}</div>)
-}
+const DailyHeader = ({
+  date,
+  setDate,
+}: {
+  date: Date;
+  setDate: Dispatch<SetStateAction<Date>>;
+}) => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [tempDate, setTempDate] = useState<Date>(new Date());
+  const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    const newDate = e.target.valueAsDate;
+    if (newDate !== null) {
+      setModalOpen(true);
+      setTempDate(new Date(dateTransform(newDate)));
+    }
+  };
+  const cancelChange = () => {
+    setTempDate(new Date(dateTransform(date)));
+    setModalOpen(false);
+  };
+  const confirmChange = () => {
+    setDate(new Date(dateTransform(tempDate)));
+    setModalOpen(false);
+  };
+  return (
+    <div>
+      {date.toLocaleDateString()}
+      <input
+        name='gamedate'
+        value={tempDate.toLocaleDateString()}
+        onChange={changeHandler}
+        max={new Date().toLocaleDateString()}
+        id='gamedate'
+        type='date'
+      />
+      <Modal
+        open={modalOpen}
+        titleContent={<h1 className='text-black'> Are you sure? </h1>}
+        primaryFn={confirmChange}
+        secondaryFn={cancelChange}
+        content={
+          <>
+            <h2 className='text-black'>This is a modal</h2>
+            <p className='text-black'>
+              You can close it by pressing Escape key, pressing close, or clicking outside the
+              modal.
+            </p>
+          </>
+        }
+      />
+    </div>
+  );
+};
 
 export default function DailyGameController() {
   const [tChar, setTChar] = useState<Character>();
@@ -43,13 +103,12 @@ export default function DailyGameController() {
   useEffect(() => {
     setTChar(getDailyCharacter(gameDate));
   }, [gameDate]);
-  console.log(maxDifficulty(), howManyDifficulty())
   return (
     tChar && (
       <GuessingGameCore target={tChar}>
         <Header />
         <IconsRow />
-        <DailyHeader date={gameDate} />
+        <DailyHeader date={gameDate} setDate={setGameDate} />
       </GuessingGameCore>
     )
   );
