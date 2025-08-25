@@ -11,8 +11,8 @@ import GuessingGameCore from './GuessingGameCore';
 import { Link } from 'react-router';
 import { Modal } from './components/Modal';
 
-const dateTransform = (d: Date) => {
-  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate() + 1}`;
+const dateTransform = (d: Date = new Date()) => {
+  return d.toISOString().split("T")[0];
 };
 export const Header = () => (
   <header
@@ -56,11 +56,11 @@ const DailyHeader = ({
     const newDate = e.target.valueAsDate;
     if (newDate !== null) {
       setModalOpen(true);
-      setTempDate(new Date(dateTransform(newDate)));
+      setTempDate(newDate);
     }
   };
   const cancelChange = () => {
-    setTempDate(new Date(dateTransform(date)));
+    setTempDate(date);
     setModalOpen(false);
   };
   const confirmChange = () => {
@@ -69,12 +69,12 @@ const DailyHeader = ({
   };
   return (
     <div>
-      {date.toLocaleDateString()}
       <input
         name='gamedate'
-        value={tempDate.toLocaleDateString()}
+        value={dateTransform(tempDate)}
         onChange={changeHandler}
-        max={new Date().toLocaleDateString()}
+        min={dateTransform(new Date("2025-08-01"))}
+        max={dateTransform()}
         id='gamedate'
         type='date'
       />
