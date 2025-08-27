@@ -122,8 +122,8 @@ function SearchBox<T extends object>({
   };
 
   return (
-    <div className='flex flex-row w-max justify-center m-auto ' ref={containerRef}>
-      <div className='flex-col'>
+    <div className='flex flex-row w-max justify-center m-auto p-4 pb-0' ref={containerRef}>
+      <div className=''>
         <input
           type='text'
           value={query}
@@ -135,16 +135,16 @@ function SearchBox<T extends object>({
         />
         {showDropdown && results.length > 0 && (
           <div
-            className='mt-0 bg-orange-300 border rounded shadow-lg z-50 w-full overflow-y-auto'
+            className='mt-0 bg-amber-500 border rounded shadow-lg z-50 w-1xl overflow-y-auto absolute w-max ml-auto mr-auto left-0 right-15'
             style={{
-              maxHeight: `${maxVisible * 2.5}rem`, // ~2.5rem per item
+              maxHeight: `${maxVisible * 2.5}rem`,
             }}>
             {results.map((item, index) => (
               <div
                 key={index}
                 // following error is fake news
                 ref={(el) => (itemsRef.current[index] = el)}
-                className={`px-3 py-2 cursor-pointer ${
+                className={`relative top-full left-0 w-full px-3 py-2 cursor-pointer ${
                   index === highlightIndex ? 'bg-blue-200' : 'hover:bg-blue-250'
                 }`}
                 onMouseDown={() => selectItem(item)}
@@ -157,8 +157,8 @@ function SearchBox<T extends object>({
       </div>
       <button
         onClick={handleSearchClick}
-        className='bg-blue-500 dark:bg-gray-900 text-white px-4 py-2 rounded-r hover:bg-blue-600 dark:hover:bg-gray-800 focus:outline-none h-max'>
-        Search
+        className='bg-blue-500 dark:bg-amber-700 text-white px-4 py-2 rounded-r hover:bg-blue-600 dark:hover:bg-amber-800 focus:outline-none h-max'>
+        Guess
       </button>
     </div>
   );

@@ -18,7 +18,7 @@ const ClueButton = ({
   const [clued, setClued] = useState<boolean>(false);
   return !clued ? (
     <button
-      className='flex-1 bg-gray-300 dark:bg-amber-800 hover:bg-blue-600 dark:hover:bg-yellow-600 text-gray-900 dark:text-white rounded-lg h-24 flex justify-center items-center p-4'
+      className='flex-1 bg-gray-300 dark:bg-amber-600 hover:bg-blue-600 dark:hover:bg-yellow-600 text-gray-900 dark:text-white rounded-lg h-24 flex justify-center items-center p-4'
       onClick={() => {
         if (show) {
           setClued(true);

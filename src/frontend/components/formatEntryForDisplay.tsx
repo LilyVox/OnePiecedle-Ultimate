@@ -6,7 +6,7 @@ export function formatEntryForDisplay(char: Character): TableEntry {
   if (dFruit === 'Unknown') showFruit = dFruit.toString();
   else if (Array.isArray(dFruit)) showFruit = dFruit[0].type;
   else showFruit = dFruit.type;
-  const showAffiliations = char.affiliations;
+  const showAffiliations = char.affiliations.split(',').join(', ');
   const showBounty = (bounty: string) => {
     const scale = ['', 'K', 'M', 'B', 'T'];
     const segments = bounty.split(',');

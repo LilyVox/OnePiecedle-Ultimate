@@ -43,7 +43,7 @@ const StatsRow = ({
 );
 export default function GuessingGameCore({ target, children }: { target: Character, children: React.ReactNode }) {
   const [entries, setEntries] = useState<Character[]>([]);
-  const updateEntries = (newEntry: Character) => setEntries([...entries, newEntry]);
+  const updateEntries = (newEntry: Character) => setEntries([newEntry, ...entries]);
   const selection = (item: Character) => {
     updateEntries(item);
     return item;
@@ -77,7 +77,6 @@ export default function GuessingGameCore({ target, children }: { target: Charact
           totalGuesses={50}
           averageGuesses={target.difficulty * 3 + 7}
         />
-        <Table entries={entries} matchCharacter={target} />
         <SearchBox<Character>
           data={characterData}
           keys={['name', 'moniker', 'affiliations']}
@@ -99,6 +98,7 @@ export default function GuessingGameCore({ target, children }: { target: Charact
             </div>
           )}
         />
+        <Table entries={entries} matchCharacter={target} />
       </div>
     </ErrorBoundary>
   );
