@@ -43,7 +43,7 @@ const StatsRow = ({
 );
 export default function GuessingGameCore({ target, children }: { target: Character, children: React.ReactNode }) {
   const [entries, setEntries] = useState<Character[]>([]);
-  const updateEntries = (newEntry: Character) => setEntries([newEntry, ...entries]);
+  const updateEntries = (newEntry: Character) => setEntries([...entries, newEntry]);
   const selection = (item: Character) => {
     updateEntries(item);
     return item;

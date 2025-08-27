@@ -31,18 +31,18 @@ const headerKeys = [
   'status',
 ];
 const arrowDisplay = (header: string, compared: string, entry: TableEntry) => {
+  const universalStyle = 'rounded-lg h-25 w-25 overflow-y-auto overflow-x-clip grid justify-center';
   if (!['debut', 'bounty', 'age', 'height'].includes(header))
     return (
       <div
-        className={`${header} ${compared} h-25 w-25 overflow-y-auto overflow-x-clip grid justify-center`}
+        className={`${header} ${compared} ${universalStyle}`}
         style={{ scrollbarWidth: 'thin', textShadow: '0 1px 4px rgba(0,0,0,.6)' }}>
         <p className='self-center'>{entry[header as keyof TableEntry]}</p>
       </div>
     );
   if (compared === Comparison.more) {
     return (
-      <div
-        className={`${header} ${compared} a_container h-25 w-25 overflow-y-auto overflow-x-clip grid justify-center`}>
+      <div className={`${header} ${compared} a_container ${universalStyle}`}>
         <img src={UpArrow} className='arrow' />
         <p>{entry[header as keyof TableEntry]}</p>
       </div>
@@ -50,8 +50,7 @@ const arrowDisplay = (header: string, compared: string, entry: TableEntry) => {
   }
   if (compared === Comparison.less) {
     return (
-      <div
-        className={`${header} ${compared} a_container h-25 w-25 overflow-y-auto overflow-x-clip grid justify-center`}>
+      <div className={`${header} ${compared} a_container ${universalStyle}`}>
         <img src={DownArrow} className='arrow' />
         <p>{entry[header as keyof TableEntry]}</p>
       </div>
@@ -60,7 +59,7 @@ const arrowDisplay = (header: string, compared: string, entry: TableEntry) => {
   if (compared === Comparison.right) {
     return (
       <div
-        className={`${header} ${compared} h-25 w-25 overflow-y-auto overflow-x-clip grid justify-center`}
+        className={`${header} ${compared} ${universalStyle}`}
         style={{ textShadow: '0 1px 4px rgba(0,0,0,.6)' }}>
         <p className='self-center'>{entry[header as keyof TableEntry]}</p>
       </div>
@@ -75,20 +74,22 @@ const TableEntryWithComparison = ({
   comparison: GuessShape;
 }) => {
   return (
-    <tr key={entry.index} className=''>
-      <td className='table_image flex-col table-cell justify-center align-middle p-1'>
-        <img src={entry.imageUrl} alt='char icon' />
-        <p>{entry.name}</p>
-      </td>
+    <div key={entry.index} className='flex flex-row h-28'>
+      <div className='px-1 p-2'>
+        <div className='table_image flex-col table-cell rounded-lg h-25 w-25 overflow-x-clip justify-center '>
+          <img className='h-21 bg-cover' src={entry.imageUrl} alt='char icon' />
+          <p>{entry.name}</p>
+        </div>
+      </div>
       {headerKeys.map((header, i) => (
-        <td
-          className={`px-1 p-4 opacity-0 [transform:rotateY(90deg)] [transform-origin:left_center] animate-[flipIn_2s_forwards]`}
+        <div
+          className={` px-1 p-2 opacity-0 [transform:rotateY(90deg)] [transform-origin:left_center] animate-[flipIn_2s_forwards] rounded-l`}
           key={i}
           style={{ animationDelay: `${0.25 * i}s` }}>
           {arrowDisplay(header, comparison[header as keyof GuessShape], entry)}
-        </td>
+        </div>
       ))}
-    </tr>
+    </div>
   );
 };
 const emptyTableDisplay = () => {
@@ -108,27 +109,25 @@ export function Table({
 
   return (
     <>
-      <table
-        className='m-auto table-auto [perspective:1000px]'
+      <div
+        className='m-auto [perspective:1000px] '
         style={{ width: '100%', borderCollapse: 'collapse', marginTop: '0' }}>
-        <thead>
-          <tr>
-            {headers.map((header, i) => (
-              <th
-                key={header + i}
-                className='w-25 pb-0 pt-4'
-                style={{ borderBottom: '2px solid #ccc', textAlign: 'center' }}>
-                {header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
+        <div className='flex flex-row pb-0 pt-4'>
+          {headers.map((header, i) => (
+            <div
+              key={header + i}
+              className='px-2 w-27'
+              style={{ borderBottom: '2px solid #ccc', textAlign: 'center' }}>
+              <p className='w-25'>{header}</p>
+            </div>
+          ))}
+        </div>
+        <div className='flex flex-col-reverse'>
           {showEntries.map((entry, i) => (
             <TableEntryWithComparison entry={entry} comparison={comparedEntries[i]} key={i} />
           ))}
-        </tbody>
-      </table>
+        </div>
+      </div>
       {entries.length === 0 && emptyTableDisplay()}
     </>
   );
