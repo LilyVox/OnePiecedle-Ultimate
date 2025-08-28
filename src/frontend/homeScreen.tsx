@@ -3,7 +3,6 @@ import LiveClock from './components/LiveClock';
 import { Link } from 'react-router';
 import MiniCalendarButton from './components/Calendar';
 
-// Updated Header Component
 const Header = () => (
   <header
     style={{
@@ -20,14 +19,12 @@ const Header = () => (
   </header>
 );
 
-// Button Component
 const Button = ({ label, location }: { label: string; location: string }) => (
   <Link to={location}>
     <button style={{ margin: '10px', padding: '10px 20px', fontSize: '16px' }}>{label}</button>
   </Link>
 );
 
-// Card Component for Transparent Backgrounds
 const Card = ({ children }: { children: React.ReactNode }) => (
   <div
     style={{
@@ -58,13 +55,11 @@ const CardHeading = ({ heading, children }: { heading: string; children?: React.
   </h3>
 );
 
-// Updated Home Page Component
 const HomeScreen = () => {
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px' }}>
       <Header />
       <div style={{ display: 'flex', justifyContent: 'space-evenly', marginTop: '20px' }}>
-        {/* Left Column */}
         <Card>
           <CardHeading heading='Dailies'>
             <LiveClock />
@@ -85,7 +80,6 @@ const HomeScreen = () => {
             borderRadius: '5px',
           }}
         />
-        {/* Middle Column */}
         <Card>
           <CardHeading heading='Free Play' />
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

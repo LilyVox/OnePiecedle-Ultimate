@@ -33,7 +33,7 @@ export const Modal: React.FC<Props> = (props) => {
     if (!open) return null;
 
     return (
-        <div className="modalBackground z-10">
+        <div className="modalBackground z-100">
             <div className="modalContainer">
                 {titleContent && (<div className="title justify-center">
                         {titleContent}

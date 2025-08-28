@@ -1,18 +1,13 @@
-import {
-  useState,
-  useEffect,
-  type Dispatch,
-  type SetStateAction,
-  type ChangeEvent,
-} from 'react';
+import { useState, useEffect, type ChangeEvent } from 'react';
 import { getDailyCharacter } from '../backend/DataHandler';
 import type { Character } from '../backend/types';
 import GuessingGameCore from './GuessingGameCore';
 import { Link } from 'react-router';
 import { Modal } from './components/Modal';
+import JSConfetti from 'js-confetti';
 
 const dateTransform = (d: Date = new Date()) => {
-  return d.toISOString().split("T")[0];
+  return d.toISOString().split('T')[0];
 };
 export const Header = () => (
   <header
@@ -43,72 +38,74 @@ export const IconsRow = () => (
     <img src='laugh-icon.png' alt='Laugh Guesser' style={{ width: '50px', height: '50px' }} />
   </div>
 );
-const DailyHeader = ({
-  date,
-  setDate,
-}: {
-  date: Date;
-  setDate: Dispatch<SetStateAction<Date>>;
-}) => {
+export default function DailyGameController() {
+  const [tChar, setTChar] = useState<Character>();
+  const [entries, setEntries] = useState<Character[]>([]);
+  const [gameDate, setGameDate] = useState<Date>(new Date());
   const [modalOpen, setModalOpen] = useState(false);
-  const [tempDate, setTempDate] = useState<Date>(new Date());
+  const [displayDate, setDisplayDate] = useState<Date>(new Date());
   const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.valueAsDate;
     if (newDate !== null) {
       setModalOpen(true);
-      setTempDate(newDate);
+      setDisplayDate(newDate);
     }
   };
+  const loadEntries = (entries: Character[] = []) => {
+    setEntries(entries);
+  };
   const cancelChange = () => {
-    setTempDate(date);
+    setDisplayDate(gameDate);
     setModalOpen(false);
   };
   const confirmChange = () => {
-    setDate(new Date(dateTransform(tempDate)));
+    setGameDate(new Date(dateTransform(displayDate)));
+    loadEntries()
     setModalOpen(false);
   };
-  return (
-    <div>
-      <input
-        name='gamedate'
-        value={dateTransform(tempDate)}
-        onChange={changeHandler}
-        min={dateTransform(new Date("2025-08-01"))}
-        max={dateTransform()}
-        id='gamedate'
-        type='date'
-      />
-      <Modal
-        open={modalOpen}
-        titleContent={<h1 className='text-black'> Are you sure? </h1>}
-        primaryFn={confirmChange}
-        secondaryFn={cancelChange}
-        content={
-          <>
-            <h2 className='text-black'>This is a modal</h2>
-            <p className='text-black'>
-              You can close it by pressing Escape key, pressing close, or clicking outside the
-              modal.
-            </p>
-          </>
-        }
-      />
-    </div>
-  );
-};
 
-export default function DailyGameController() {
-  const [tChar, setTChar] = useState<Character>();
-  const [gameDate, setGameDate] = useState<Date>(new Date());
   useEffect(() => {
-    setTChar(getDailyCharacter(gameDate));
-  }, [gameDate]);
+    if (!tChar) {
+      setTChar(getDailyCharacter(gameDate));
+    }
+    const jsConfetti = new JSConfetti();
+    if (tChar && entries.includes(tChar)) {
+      jsConfetti.addConfetti({
+        emojis: ['☠️', '🏴‍☠️ ', '💥', '✨', '🍖', '⚓'],
+        emojiSize: 100,
+        confettiNumber: 60,
+      });
+    }
+  }, [gameDate, tChar, entries]);
   return (
     tChar && (
-      <GuessingGameCore target={tChar}>
+      <GuessingGameCore target={tChar} setEntries={setEntries} entries={entries}>
+        <Modal
+          open={modalOpen}
+          titleContent={<h1 className='text-black'> Sure you want to change the date?</h1>}
+          primaryFn={confirmChange}
+          secondaryFn={cancelChange}
+          content={
+            <>
+              <h2 className='text-black'>This will wipe your current guesses.</h2>
+              <p className='text-black'>
+                To cancel, press Escape, close, or click outside the
+                modal. To confirm, press continue.
+              </p>
+            </>
+          }
+        />
         <Header />
         <IconsRow />
-        <DailyHeader date={gameDate} setDate={setGameDate} />
+        <input
+          name='gamedate'
+          value={dateTransform(displayDate)}
+          onChange={changeHandler}
+          min={dateTransform(new Date('2025-08-01'))}
+          max={dateTransform()}
+          id='gamedate'
+          type='date'
+        />
       </GuessingGameCore>
     )
   );

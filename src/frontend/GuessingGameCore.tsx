@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import SearchBox from './components/SearchBox';
 import { characterData } from '../backend/characterData';
 import type { Character } from '../backend/types';
@@ -8,7 +8,6 @@ import {
   findCharDataByIndex
 } from '../backend/DataHandler';
 import { Table } from './components/Table';
-import JSConfetti from 'js-confetti';
 import { ClueBoard } from './components/ClueBoard';
 
 const StatsRow = ({
@@ -41,8 +40,7 @@ const StatsRow = ({
     </p>
   </div>
 );
-export default function GuessingGameCore({ target, children }: { target: Character, children: React.ReactNode }) {
-  const [entries, setEntries] = useState<Character[]>([]);
+export default function GuessingGameCore({ target, children, entries, setEntries }: { target: Character, entries: Character[], children: React.ReactNode, setEntries:React.Dispatch<React.SetStateAction<Character[]>> }) {
   const updateEntries = (newEntry: Character) => setEntries([...entries, newEntry]);
   const selection = (item: Character) => {
     updateEntries(item);
@@ -55,16 +53,6 @@ export default function GuessingGameCore({ target, children }: { target: Charact
       if (!entries.includes(foundChar)) selection(foundChar);
     }
   };
-  useEffect(() => {
-    const jsConfetti = new JSConfetti();
-    if (entries.includes(target)) {
-      jsConfetti.addConfetti({
-        emojis: ['☠️', '🏴‍☠️ ', '💥', '✨', '🍖', '⚓'],
-        emojiSize: 100,
-        confettiNumber: 60,
-      });
-    }
-  }, [entries, target]);
   return (
     <ErrorBoundary>
       <div

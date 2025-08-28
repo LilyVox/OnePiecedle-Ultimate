@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { selectRandomCharForGuessing } from '../backend/DataHandler';
 import type { Character } from '../backend/types';
 import GuessingGameCore from './GuessingGameCore';
+import JSConfetti from 'js-confetti';
 import { Link } from 'react-router';
 
 export const Header = () => (
@@ -36,13 +37,24 @@ export const IconsRow = () => (
 
 export default function GuessingGameController() {
   const [tChar, setTChar] = useState<Character>();
+  const [entries, setEntries] = useState<Character[]>([]);
   useEffect(() => {
-    setTChar(selectRandomCharForGuessing());
-  }, []);
+    if (!tChar) {
+      setTChar(selectRandomCharForGuessing());
+    }
+    const jsConfetti = new JSConfetti();
+    if (tChar && entries.includes(tChar)) {
+      jsConfetti.addConfetti({
+        emojis: ['☠️', '🏴‍☠️ ', '💥', '✨', '🍖', '⚓'],
+        emojiSize: 100,
+        confettiNumber: 60,
+      });
+    }
+  }, [tChar, entries]);
 
   return (
     tChar && (
-      <GuessingGameCore target={tChar}>
+      <GuessingGameCore entries={entries} setEntries={setEntries} target={tChar}>
         <Header />
         <IconsRow />
       </GuessingGameCore>
