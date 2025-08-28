@@ -58,7 +58,7 @@ export default function MiniCalendarButton() {
   const popoverRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
-  const { cells, first, last } = useMemo(() => getCalendarGrid(viewDate), [viewDate]);
+  const { cells } = useMemo(() => getCalendarGrid(viewDate), [viewDate]);
 
   // Close on outside click
   useEffect(() => {

@@ -143,7 +143,7 @@ function SearchBox<T extends object>({
               <div
                 key={index}
                 // following error is fake news
-                ref={(el) => (itemsRef.current[index] = el)}
+                ref={(el) => {(itemsRef.current[index] = el)}}
                 className={`relative top-full left-0 w-full px-3 py-2 cursor-pointer ${
                   index === highlightIndex ? 'bg-blue-200' : 'hover:bg-blue-250'
                 }`}

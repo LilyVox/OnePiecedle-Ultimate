@@ -198,7 +198,7 @@ export async function scrapeCharacterList() {
       .first()
       .children('tbody')
       .find('tr')
-      .each((i, row) => {
+      .each((__i, row) => {
         const rowElements = $(row).find('td');
         const nameCheck = rowElements.get(1);
         if (nameCheck === undefined) {
