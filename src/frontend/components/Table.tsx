@@ -4,6 +4,7 @@ import { formatEntryForDisplay } from './formatEntryForDisplay';
 import DownArrow from '../../assets/down-arrow.svg';
 import UpArrow from '../../assets/up-arrow.svg';
 import Circle from '../../assets/circle.svg';
+import Cross from '../../assets/cross.svg';
 
 function compareCharacterEntry(match: Character, entryChar: Character) {
   const guessChar = new GuessCharacter(match);
@@ -32,14 +33,14 @@ const headerKeys = [
 ];
 const arrowDisplay = (header: string, compared: string, entry: TableEntry) => {
   const universalStyle = 'rounded-lg h-25 w-25 overflow-y-auto overflow-x-clip grid justify-center';
-  if (!['debut', 'bounty', 'age', 'height'].includes(header))
+  if (compared === Comparison.wrong) {
     return (
-      <div
-        className={`${header} ${compared} ${universalStyle}`}
-        style={{ scrollbarWidth: 'thin', textShadow: '0 1px 4px rgba(0,0,0,.6)' }}>
-        <p className='self-center'>{entry[header as keyof TableEntry]}</p>
+      <div className={`${header} ${compared} a_container ${universalStyle}`}>
+        <img src={Cross} className='sticky arrow' />
+        <p className='overflow-y-auto overflow-x-clip'>{entry[header as keyof TableEntry]}</p>
       </div>
     );
+  }
   if (compared === Comparison.more) {
     return (
       <div className={`${header} ${compared} a_container ${universalStyle}`}>
@@ -58,10 +59,9 @@ const arrowDisplay = (header: string, compared: string, entry: TableEntry) => {
   }
   if (compared === Comparison.right) {
     return (
-      <div
-        className={`${header} ${compared} ${universalStyle}`}
-        style={{ textShadow: '0 1px 4px rgba(0,0,0,.6)' }}>
-        <p className='self-center'>{entry[header as keyof TableEntry]}</p>
+      <div className={`${header} ${compared} a_container ${universalStyle}`}>
+        <img src={Circle} className='arrow' />
+        <p>{entry[header as keyof TableEntry]}</p>
       </div>
     );
   }
@@ -78,7 +78,7 @@ const TableEntryWithComparison = ({
       <div className='px-1 p-2'>
         <div className='table_image flex-col table-cell rounded-lg h-25 w-25 overflow-x-clip justify-center '>
           <img className='h-21 bg-cover' src={entry.imageUrl} alt='char icon' />
-          <p>{entry.name}</p>
+          <p className='hover:opacity-0 opacity-100' >{entry.name}</p>
         </div>
       </div>
       {headerKeys.map((header, i) => (
